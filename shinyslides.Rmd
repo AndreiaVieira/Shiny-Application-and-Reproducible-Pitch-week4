@@ -1,0 +1,87 @@
+---
+title: "<font size=10>Course Project:</br><font size=10>Shiny Application and Reproducible Pitch <br/></font>"
+author: "Andreia Vieira"
+date: "28/07/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## SUMMARY
+
+<font size ="4">
+<div style="text-align: justify">The purpose of this presentation is to show a brilliant application and its availability on Git-Hub. A compilation of data from the COVID-19 MONITORING PANEL of neighborhoods in Manaus / AM was carried out on 07/02/2020, and its integration with census data: population and number of households. This information was associated with disease incidence rates (cases / 100.000 hab.)<div/></font>
+
+
+## INFORMATION
+
+
+- **APP Shiny**
+
+<font size ="4">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   URL  https://datavs.shinyapps.io/SHAINYA/ </font>
+
+
+- **File test csv **
+
+<font size ="4"> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; URL https://github.com/AndreiaVieira/Shiny-Application-and-Reproducible-Pitch-week4.git</font>
+
+- **Fundação de vigilância sanitária – FVS/AM**
+
+<font size ="4"> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+URL  http://www.fvs.am.gov.br/indicadorSalaSituacao_view/60/2 </font>
+
+- **IBGE - Censo Demografico 2010 - Agregados - AM **
+
+<font size ="4"> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+URL  http://censo2010.ibge.gov.br/resultados.html </font>
+
+```{r, warning=FALSE, message=FALSE}
+
+library (plotly)
+library(leaflet)
+library(dplyr)
+library(htmltools)
+library(plotly)
+library(knitr)
+
+
+# Leitura dos dados
+covid<-setwd("C:/Mana/ACursoCienciadeDados/Aulas/Desenvolvendo Dados/Projetos")
+covid<-read.csv("./COVID19_MANAUS55.csv", header=TRUE, sep=";", dec=".")
+
+covid <- covid %>%
+dplyr::mutate(grupo = cut(TAXA_COVID, breaks = c(0, 500, 1000, 2000, Inf), labels = c("Abaixo de 500", "Entre 500 e 1000", "Entre 1000 e 2000", "Acima de 2000"))) 
+```
+
+## DATASET {.columns-1 .smaller}
+#### Last variable is a class (cases COVID/ 100.000 hab.)
+
+```{r, echo = FALSE}
+
+ covid
+
+```
+
+## PLOT
+
+```{r, warning=FALSE, echo=FALSE, message=FALSE}
+
+library(plotly)
+p<-plot_ly(data = covid, x = ~BAIRRO, y = ~POPULACAO, type = "scatter", mode = "markers", color=(~grupo),categoryarray = ~grupo, categoryorder = "array")
+
+layout(p,title="COVID19 - MANAUS/AM - 02 /07/2020", xaxis=(list(title="Neighborhoods")), yaxis=(list(title="Population - censo 2010 (*1000)"))) 
+
+```
+
+## CONSIDERATIONS 
+
+- There is no standard with respect to COVID19 indication rate.
+- In Shiny application, the neighborhoods were grouped by the rate of COVID-19.
+
+
